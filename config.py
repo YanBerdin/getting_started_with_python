@@ -27,4 +27,25 @@ FB_APP_ID = int(os.environ.get("FB_APP_ID", 0))
 #    - Sélectionner 24 caractères aléatoires depuis `string.printable` (qui contient tous les caractères ASCII imprimables)
 #    - Joindre ces caractères en une seule chaîne avec la méthode `join()`
 
-# Cette clé secrète est cruciale pour la sécurité d'une application Flask, car elle sert à signer les cookies de session et à protéger contre les attaques CSRF (Cross-Site Request Forgery). Une clé forte et aléatoire comme celle générée par ce code améliore significativement la sécurité de l'application.
+# Cette clé secrète est cruciale pour la sécurité d'une application Flask,  => sert à signer les cookies de session et à protéger contre les attaques CSRF (Cross-Site Request Forgery)..
+
+# Configuration de la base de données
+# Vérifier si on doit utiliser SQLite au lieu de MySQL
+USE_SQLITE = os.environ.get("USE_SQLITE", "false").lower() == "true"
+
+if USE_SQLITE:
+    # Configuration SQLite
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+else:
+    # Configuration MySQL
+    MYSQL_USER = os.environ.get("MYSQL_USER", "root")
+    MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "")
+    MYSQL_HOST = os.environ.get("MYSQL_HOST", "localhost")
+    MYSQL_DATABASE = os.environ.get("MYSQL_DATABASE", "fbapp_db")
+    
+    # URI de connexion MySQL avec PyMySQL
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}"
+
+# Option pour désactiver les signaux de modification (recommandé pour les performances)
+SQLALCHEMY_TRACK_MODIFICATIONS = False
